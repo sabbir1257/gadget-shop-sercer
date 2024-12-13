@@ -21,14 +21,26 @@ const client = new MongoClient(url, {
           strict: true,
           deprecationErrors: true
      }
-})
+});
+
+const userCollection = client.db('gadgetShop').collection('users');
+const productCollection = client.db('gadgetShop').collection('products');
 
 const dbConnect = async () => {
      try {
           client.connect()
           console.log("Database connected successfully");
-     }
-     catch (error) {
+
+
+          // insert user
+          app.post('/users', async (req, res) => {
+               const user = req.body;
+               const result = await userCollection.insertOne(user);
+               res.send(result);
+          })
+
+
+     } catch (error) {
           console.log(error.name, error.message)
      }
 };
