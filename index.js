@@ -32,9 +32,30 @@ const dbConnect = async () => {
           console.log("Database connected successfully");
 
 
+          // get user
+          app.get('/user', async (req, res) => {
+               const query = { email: req.body.email };
+               const user = await userCollection.findOne(query);
+               if (user) {
+                    return res.send({ message: 'No user found' })
+               }
+               res.send(user);
+          })
+
+
+
+
+
           // insert user
           app.post('/users', async (req, res) => {
                const user = req.body;
+               const query = { email: user.email }
+               const existingUser = await userCollection.findOne(query);
+
+               if (existingUser) {
+                    return res.send({ message: 'User already exists' });
+               };
+
                const result = await userCollection.insertOne(user);
                res.send(result);
           })
@@ -46,7 +67,6 @@ const dbConnect = async () => {
 };
 
 dbConnect();
-
 
 
 
